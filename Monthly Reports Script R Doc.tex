@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\title{R Script Monthly Report}
+\date{}
+\begin{document}
+\maketitle
+This document serves a quick summary of the required documents and steps for using the Month Reports R Script and the various reports automated by it. Individual reports are demarcated with a commented out row of equal signs. Check the title of each report carefully before running and refer to documentation for needed imports. Run all script in code break sections. Each break has an explanation to ease code recycling.
+\section{Monthly Summary of All Actions}
+Run the first Monday of each month.
+\subsection{Required Reports}
+\begin{itemize}
+	\item Director's Numbers 
+	\subitem Pre created and located in All Directors/Director's Numbers for R Script.csv
+	\item Monthly Actions Individual
+	\subitem Vista View - ADV Scheduled Actions Completed By
+	\item Monthly Actions Organization
+	\subitem Vista View - Scheduled Action Completed By Org
+\end{itemize}
+Save reports in the All Directors folder in L: Drive folder. 
+\subsection{Running Script for Monthly Summary of All Actions}
+\begin{itemize}
+	\item Director's Numbers as DN should not require any modification, as the file is unchanged.
+	\item Check file names of Monthly Actions Individual and Monthly Actions Orgs. Modify the file name of the read.csv command. 
+	\item Change the output file name in the write.csv command. 
+\end{itemize}
+
+\section{Visits Only for Date Range Summary}
+Run the first Monday of each month or as requested
+\subsection{Required Reports}
+\begin{itemize}
+	\item Director's Numbers
+	\subitem WILL NOT NEED TO REIMPORT IF RUNNING FIRST MONDAY 
+	\subitem Pre created and located in All Directors/Director's Numbers for R Script.csv 
+	\item Monthly Actions Individual 
+	\subitem Vista View - ADV Scheduled Actions Completed By
+	\subitem MODIFY THE DATE RANGE IN THE WHERE CLAUSE
+	\item Monthly Actions Organization
+	\subitem Vista View - Scheduled Action Completed By Org
+	\subitem MODIFY THE DATE RANGE IN THE WHERE CLAUSE
+\end{itemize}
+Save reports in the All Directors Folder in the L: Drive folder.
+\subsection{Running Script for Visits Only for Date Range Summary}
+\begin{itemize}
+	\item Check file names for Range.Actions.Ind and Range.Actions.Orgs
+	\item Check output of Range.Summary before reording columns.
+	\subitem Check order and modify subset function as needed. 
+	\subitem This will need modified depending on the number of months in the range.
+	\item Change names of output files in the write.csv commands. 
+	\subitem There will be 2 files - a list of all actions and the summary table.
+\end{itemize}
+
+\section{Mailing List with Filters}
+Run as requested. May need run multiple times in one shot. Watch file names on imports, especially if this is being run multiple times in one day. The filters are:
+\begin{itemize}
+	\item All Alum and Alum Non Grads
+	\item All Assigned Friends
+	\item Unassigned Friends with Giving or Pledges of More than \$100
+\end{itemize}
+Will need to import library reshape2 unless already imported from other reports.
+\subsection{Required Reports}
+\begin{itemize}
+	\item Zip Codes
+	\subitem Free Online Zip Code Tools. Copy and save as CSV in Excel.
+	\subitem Check States in range before running Prospects report.
+	\subitem Name column "Zips" for recognition in R Script.
+	\item Prospects
+	\subitem Portal Prospects Report. Filter states only. Check Zip Code web output for states.
+	\item Giving
+	\subitem Portal - Cumulative Giving From Selected Fiscal Year Forward
+	\subitem Use previous fiscal year.
+	\item Employees
+	\subitem Vista Views - Employees
+	\subitem Should be pre-ran and relatively stable.
+\end{itemize}
+\subsection{Running Script for Mailing List with Filters}
+\begin{itemize}
+	\item Check file names for 4 imported files
+	\item Before Remove DNC Codes check summary(filteredlist\$NO\_MAIL) and summary(filteredlist\$CallRules) for DNC Codes. 
+	\subitem Leave bad number and Do Not Call codes. May need to modify filters, but not likely.
+	\item Change name of output files in the write.csv command.
+\end{itemize}
+\end{document}
