@@ -1,0 +1,42 @@
+#Visits Only For Date Range Summary
+#!!May not need to reimport reshape!!
+library(reshape2)
+library(lubridate)
+
+#Director's Numbers - Needs Imported with No Changes
+DN <- read.csv("L:/Advancement/Justin/General/Director's Numbers for R Script.csv")
+
+#STOP!!Import Range Actions File - Filename Needs Updated!!
+Range.Actions.Ind <- read.csv("L:/Advancement/Justin/General/2015 August 6 Visits Only FY 2015.csv", header = TRUE)
+Range.Actions.Orgs <- read.csv("L:/Advancement/Justin/General/2015 August 6 Visits Only FY 2015 Orgs.csv", header = TRUE)
+colnames(Range.Actions.Orgs)<- c("SOLICITOR_CODE", "PEOPLE_CODE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", 
+                                 "STATE", "ACTION_ID", "SCHEDULED_DATE", "EXECUTION_DATE", "COMPLETED_BY", "NOTE")
+Range.Actions <- rbind(Range.Actions.Ind, Range.Actions.Orgs)
+
+
+#Adds Solicitor Information to Report
+Range.Actions <- merge(Range.Actions, DN)
+#Adds MONTH_YEAR Column
+Range.Actions$EXECUTION_DATE <- substring(Range.Actions$EXECUTION_DATE, 1, #16)
+Range.Actions.Date <- strptime(x = as.character(Range.Actions$EXECUTION_DATE), format = "%m/%d/%Y %H:%M")
+Range.Actions <- cbind(Range.Actions, paste(month(Range.Actions.Date), "/", year(Range.Actions.Date)))
+colnames(Range.Actions)[#16] <- "MONTH_YEAR"
+rm(Range.Actions.Date)
+#Subset Range to Only Include Actios
+Range.Actions <- subset(Range.Actions, ACTION_ID == "CAFC2FC")
+#Pivot Table
+Range.Summary <- dcast(Range.Actions, TITLE~MONTH_YEAR, value.var = "ACTION_ID", length, margins = TRUE) 
+
+#STOP! Reorder Columns - MODIFY AS NEEDED
+Range.Summary <- Range.Summary[,c(1, 11:13, 3:5, 2, 6:10, 14)]
+
+#CHANGE OUTPUT FILE NAME BEFORE EXPORT
+write.csv(Range.Summary, file = "L:/Advancement/Justin/Call Officers/All Directors/2015 July 2 Visis Only FY Summary.csv")
+write.csv(Range.Actions, file = "L:/Advancement/Justin/General/2015 August 6 Visits Only FY 2015 Clean.csv")
+
+#Troy's Report
+library(stringr)
+Other <- str_extract(Range.Actions$Notes, "Terri"|"Roberta"|"Kraig"|"Leta"|"Mario")
+Troy.Range.Actions <- cbind(Range.Actions, Other)
+Troy.Range.Actions <- Troy.Range.Actions[#]
+

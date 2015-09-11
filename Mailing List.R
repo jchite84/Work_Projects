@@ -1,64 +1,8 @@
-#1 Month Summary of All Actions
-
-library(reshape2)
-
-#Director's Numbers - Needs Imported with No Changes
-DN <- read.csv("L:/Advancement/Justin/General/Director's Numbers for R Script.csv")
- 
-#STOP!!Import Actions File - Filename Needs Updated!!
-Month.Actions.Ind <- read.csv("L:/Advancement/Justin/General/2015 August 3 June Actions Ind.csv")
-Month.Actions.Orgs <- read.csv("L:/Advancement/Justin/Call Officers/All Directors/2015 June 1 Range Test Orgs.csv", header = FALSE)
-colnames(Month.Actions.Orgs)<- c("SOLICITOR_CODE", "PEOPLE_CODE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", 
-                                 "STATE", "ACTION_ID", "SCHEDULED_DATE", "EXECUTION_DATE", "COMPLETED_BY", "NOTE")
-Month.Actions <- rbind(Month.Actions.Ind, Month.Actions.Orgs)
-#Adds Solicitor Information to Report
-Month.Actions <- merge(Month.Actions, DN)
-#Pivot Table
-Month.Summary <- dcast(Month.Actions, TITLE~ACTION_ID, value.var = "EXECUTION_DATE", length, margins = TRUE)
-
-#CHANGE OUTPUT FILE NAME BEFORE EXPORT
-write.csv(Month.Summary, file = "L:/Advancement/Justin/General/2015 August 3 July Actions Summary.csv")
-write.csv(Month.Actions, file = "L:/Advancement/Justin/General/2015 August 3 July Actions.csv")
-
-
-#===============================================================================#
-#Visits Only For Date Range Summary
-#!!May not need to reimport reshape!!
-library(reshape2)
-library(lubridate)
-#STOP!!Import Range Actions File - Filename Needs Updated!!
-Range.Actions.Ind <- read.csv("L:/Advancement/Justin/General/2015 August 6 Visits Only FY 2015.csv", header = TRUE)
-Range.Actions.Orgs <- read.csv("L:/Advancement/Justin/General/2015 August 6 Visits Only FY 2015 Orgs.csv", header = TRUE)
-colnames(Range.Actions.Orgs)<- c("SOLICITOR_CODE", "PEOPLE_CODE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", 
-                                 "STATE", "ACTION_ID", "SCHEDULED_DATE", "EXECUTION_DATE", "COMPLETED_BY", "NOTE")
-Range.Actions <- rbind(Range.Actions.Ind, Range.Actions.Orgs)
-
-
-#Adds Solicitor Information to Report
-Range.Actions <- merge(Range.Actions, DN)
-#Adds MONTH_YEAR Column
-Range.Actions$EXECUTION_DATE <- substring(Range.Actions$EXECUTION_DATE, 1, 14)
-Range.Actions.Date <- strptime(x = as.character(Range.Actions$EXECUTION_DATE), format = "%m/%d/%Y %H:%M")
-Range.Actions <- cbind(Range.Actions, paste(month(Range.Actions.Date), "/", year(Range.Actions.Date)))
-colnames(Range.Actions)[14] <- "MONTH_YEAR"
-rm(Range.Actions.Date)
-#Subset Range to Only Include Actios
-Range.Actions <- subset(Range.Actions, ACTION_ID == "CAFC2FC")
-#Pivot Table
-Range.Summary <- dcast(Range.Actions, TITLE~MONTH_YEAR, value.var = "ACTION_ID", length, margins = TRUE) 
-
-#STOP! Reorder Columns - MODIFY AS NEEDED
-Range.Summary <- Range.Summary[,c(1, 11:13, 3:5, 2, 6:10, 14)]
-
-#CHANGE OUTPUT FILE NAME BEFORE EXPORT
-write.csv(Range.Summary, file = "L:/Advancement/Justin/Call Officers/All Directors/2015 July 2 Visis Only FY Summary.csv")
-write.csv(Range.Actions, file = "L:/Advancement/Justin/General/2015 August 6 Visits Only FY 2015 Clean.csv")
-
-#==============================================================================#
 #Mailing List with Filters
 #Need Zip Codes within Radius, Prospects by State, Cumulative Giving From Selected FY Forward
 
 library(reshape2)
+library(zipcode)
 #Change File Names As Needed!!
 prospects <- read.csv("L:/Advancement/Justin/Call Officers/Justin Reports/2015 June 30 OH PA WV MD.csv")
 zips <- read.csv("L:/Advancement/Justin/Call Officers/Justin Reports/2015 June 30 75 Pittsburgh Test.csv")
@@ -78,8 +22,8 @@ giving$PledgeBalanceSum <- as.integer(giving$PledgeBalanceSum)
 prospects <- merge(prospects, giving, by = c("PEOPLE_ID", "PEOPLE_ID"), all = TRUE)
 
 #Remove Plus 4 from Zip Code and convert to integer
-prospects$ZIP_CODE <- substring(prospects$ZIP_CODE, 1, 5)
-prospects$ZIP_CODE <- as.integer(prospects$ZIP_CODE)
+prospects$ZIP_CODE <- clean.zipcodes(prospects$ZIP_CODE)
+zips$Zips <- clean.zipcodes(zips$Zips)
 #Create Logical of Zips that are in Target Radius, attache to prospects, filter
 zipsInRadius <- prospects$ZIP_CODE %in% zips$Zips
 prospects <- cbind(prospects, zipsInRadius)
