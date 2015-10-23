@@ -17,7 +17,7 @@ send.mail(
   inline = TRUE,
   body = "<html><a href = https://www.dropbox.com/s/eemv9t67zzuzq8g/Promo.csv?dl=0>Promo</href></html>",
   smtp = list(host.name = "smtp.gmail.com", port = 465, 
-              user.name = "jchite84@gmail.com", passwd = "eternaltruth12", ssl = TRUE),
+              user.name = "jchite84@gmail.com", passwd = "**********", ssl = TRUE),
   authenticate = TRUE,
   send = TRUE)
   
