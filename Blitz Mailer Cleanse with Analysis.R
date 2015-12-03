@@ -58,3 +58,27 @@ deduped <- cbind(deduped, percentage.loss)
 ggplot(deduped, aes(Raw.Number, Number.Mailed))
   + geom_point()
   + stat_smooth(method = "lm")
+
+city.names <- c("Atlanta", "Baltimore", "Boston", "Chicago", "Cleveland", "Dallas", 
+                "DC", "Denver", "Detroit", "Erie", "Fairport", "Greenville_SC", 
+                "Harrisburg", "Houston", "Indianapolis", "Louisville", "Myrtle_Beach",
+                "NYC", "Philadelphia", "Pittsburgh", "Raleigh", "Scottsdale")
+
+for (i in 1:22){
+  assign(city.names[i], read.csv(sprintf("L:/Advancement/Justin/Alumni/Blitz Event Mailing Lists/%s.csv", city.names[i])))
+}
+
+names <- as.data.frame(city.names)
+id <- rbind(Atlanta [1], Baltimore[1],Boston[1],	Cleveland[1],
+          	Dallas[1],DC[1],Denver[1],Detroit[1],Erie[1],	Fairport[1],
+            	Greenville_SC[1],Harrisburg[1],	Houston[1],	Indianapolis[1],
+            	Louisville[1],Myrtle_Beach[1],NYC[1],	Philadelphia[1],
+            	Pittsburgh[1],Raleigh[1],Scottsdale[1])
+
+call.list <- merge(id, prospects)
+call.list.chicago <- merge(Chicago, prospects, by.x = "Combined.Salutation", by.y = "CombinedSalutation")
+call.list <- call.list[,c(85, 17, 18, 19, 60, 61, 22)]
+call.list.chicago <- call.list.chicago[,10]
+call.list$ZIP_CODE <- clean.zipcodes(call.list$ZIP_CODE)
+write.csv(call.list.chicago, "L:/Advancement/Justin/Alumni/Blitz Event Mailing Lists/ChicagoNumbers.csv")
+write.csv(call.list, "L:/Advancement/Justin/Alumni/Blitz Event Mailing Lists/Call List.csv")
