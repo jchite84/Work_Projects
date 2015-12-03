@@ -11,3 +11,5 @@ Twitter Word Cloud takes a scrape of 1 year of tweets, cleans the output and cre
 words about the college.
 
 Blitz Mailer Cleanse with Analysis contains For Loops written to merge several CSV spreadsheets and create indivudal outputs. 
+
+Scoring Model for Track was created 12/2/2015. It consists of a file inport, assigning scores for various for various criteria and computing the aggregate score. In my opinion, the most valuable part of the code is the nested for loop that assigns scores for giving history and capacity. These could easily be modified for use at other institutions. 
