@@ -7,7 +7,7 @@ library(tidyr)
 library(dplyr)
 
 #Imports Moves File
-moves.all <- read.csv("L:/Advancement/Justin/General/September Reports/2015 October 21 Moves Management.csv")
+moves.all <- read.csv("L:/Advancement/Justin/General/December Reports/2016 January 7 December Moves.csv")
 #Subset by prospects with code - works
 moves.all <- subset(moves.all, Solicitation.Code != "")
 
@@ -35,11 +35,10 @@ all.plot <- ggplot(data= moves.unassigned, aes(Solicitor))+
 grid.arrange(moves.plot, moves.grob)
 
 #Summary Chart of Moves.All
+#all.moves <- ggplot(..., color = "Solicitation_Code")+
+#  facet_wrap(Month)
 
+#write.csv(moves.all, "L:/Advancement/Justin/...", append = TRUE)
 
-
-
-all.moves <- ggplot(..., color = "Solicitation_Code")+
-  facet_wrap(Month)
-  
-write.csv(moves.all, "L:/Advancement/Justin/...", append = TRUE)
+#Write Monthly Moves Summary 
+write.csv(moves.chart, "L:/Advancement/Justin/General/December Reports/January 7 2016 December Moves Summary.csv")
