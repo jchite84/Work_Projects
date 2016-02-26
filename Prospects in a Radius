@@ -1,0 +1,29 @@
+#====================================================================================#
+# Highlight and run the function.                                                    #
+# Type radius(target zip code, radius) (ie "radius(16125, 50)")                      #
+# The program will ask for an input file. Use the Total Prospects csv file.          #
+# The program will ask for an output file. Use filename.csv (You MUST type .csv)     #
+# It will ask if you want to create a new file, choose "Yes"                         #
+#====================================================================================#
+
+
+radius <- function(zip, radius){
+  library (zipcode)
+
+  prospects <- read.csv(file.choose())
+  zipcode <- read.csv("L:/Advancement/Justin/GIS Files/zip_codes_states.csv")
+  prospects$Zip <- clean.zipcodes(prospects$Zip)
+  zipcode$zip_code <- clean.zipcodes(zipcode$zip_code)
+
+  miles <- radius
+  target <- zipcode[which(zipcode$zip_code == zip), ]
+  range <- matrix(nrow = 2, ncol = 2, 
+                c(target$latitude-miles/60, target$latitude+miles/60, 
+                  target$longitude+miles/69, target$longitude-miles/69))
+  target.zip <- subset(zipcode, (zipcode$latitude >= range[1,1] & zipcode$latitude <= range[2,1]) &
+                       (zipcode$longitude <= range[1,2] & zipcode$longitude >= range[2,2]))
+
+  target.prospects <- merge(prospects, target.zip, by.x = "Zip", by.y = "zip_code")
+  write.csv(target.prospects, file.choose(new = TRUE))
+  
+}
